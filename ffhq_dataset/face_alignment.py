@@ -81,12 +81,37 @@ def image_align(src_file, dst_file, face_landmarks, output_size=1024, transform_
                 img = PIL.Image.fromarray(img, 'RGBA')
             else:
                 img = PIL.Image.fromarray(img, 'RGB')
-            quad += pad[:2]
-
+            quad += pad[:2]     
+        
+        '''Saving images in 1024*1024, 512*512, 256*256 which can be further used at projecting images to network trained at different resolution'''
         # Transform.
         img = img.transform((transform_size, transform_size), PIL.Image.QUAD, (quad + 0.5).flatten(), PIL.Image.BILINEAR)
+        
+        temp_file = dst_file#1024
+        
         if output_size < transform_size:
             img = img.resize((output_size, output_size), PIL.Image.ANTIALIAS)
+                
+        # Save aligned image.
+        dst_file = dst_file[:-4] + '.' + str(1024) + dst_file[-4:]
+        img.save(dst_file, 'PNG')
+
+        #512
+        if output_size < transform_size:
+            img = img.resize((512, 512), PIL.Image.ANTIALIAS)
 
         # Save aligned image.
+        dst_file = temp_file
+        dst_file = dst_file[:-4] + '.' + str(512) + dst_file[-4:]
         img.save(dst_file, 'PNG')
+
+        #256
+        if output_size < transform_size:
+            img = img.resize((256, 256), PIL.Image.ANTIALIAS)
+
+        # Save aligned image.
+        dst_file = temp_file
+        dst_file = dst_file[:-4] + '.' + str(256) + dst_file[-4:]
+        img.save(dst_file, 'PNG')	        img.save(dst_file, 'PNG')
+
+        dst_file = temp_file
