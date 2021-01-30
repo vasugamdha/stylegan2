@@ -112,6 +112,6 @@ def image_align(src_file, dst_file, face_landmarks, output_size=1024, transform_
         # Save aligned image.
         dst_file = temp_file
         dst_file = dst_file[:-4] + '.' + str(256) + dst_file[-4:]
-        img.save(dst_file, 'PNG')	        img.save(dst_file, 'PNG')
+        img.save(dst_file, 'PNG')
 
         dst_file = temp_file
