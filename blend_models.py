@@ -118,7 +118,7 @@ def main(low_res_pkl: Path, # Pickle file from which to take low res layers
             # TODO modify all the networks
             if output_pkl:
                 misc.save_pkl((low_res_G, low_res_D, out), output_pkl)
-            
+                print('%s saved'%output_pkl)
         
 if __name__ == '__main__':
     typer.run(main)
