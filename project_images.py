@@ -84,6 +84,7 @@ def main():
     parser.add_argument('--tmp-dir', default='.stylegan2-tmp', help='Temporary directory for tfrecords and video frames')
     parser.add_argument('--network-pkl', default='http://d36zk2xti64re0.cloudfront.net/stylegan2/networks/stylegan2-ffhq-config-f.pkl', help='StyleGAN2 network pickle filename')
     parser.add_argument('--vgg16-pkl', default='http://d36zk2xti64re0.cloudfront.net/stylegan1/networks/metrics/vgg16_zhang_perceptual.pkl', help='VGG16 network pickle filename')
+    parser.add_argument('--res', type=int, default=1024, help='Resolution at which network-pkl is trained')
     parser.add_argument('--num-steps', type=int, default=1000, help='Number of optimization steps')
     parser.add_argument('--initial-learning-rate', type=float, default=0.1, help='Initial learning rate')
     parser.add_argument('--initial-noise-factor', type=float, default=0.05, help='Initial noise factor')
@@ -109,13 +110,15 @@ def main():
 
     src_files = sorted([os.path.join(args.src_dir, f) for f in os.listdir(args.src_dir) if f[0] not in '._'])
     for src_file in src_files:
-        project_image(proj, src_file, args.dst_dir, args.tmp_dir, video=args.video)
-        if args.video:
-            render_video(
-                src_file, args.dst_dir, args.tmp_dir, args.num_steps, args.video_mode,
-                args.video_size, args.video_fps, args.video_codec, args.video_bitrate
-            )
-        shutil.rmtree(args.tmp_dir)
+        #projecting only those image whose res is same as network's res
+        if src_file.split('.')[-2] == str(args.res):
+            project_image(proj, src_file, args.dst_dir, args.tmp_dir, video=args.video)
+            if args.video:
+                render_video(
+                    src_file, args.dst_dir, args.tmp_dir, args.num_steps, args.video_mode,
+                    args.video_size, args.video_fps, args.video_codec, args.video_bitrate
+                )
+            shutil.rmtree(args.tmp_dir)
 
 
 if __name__ == '__main__':
